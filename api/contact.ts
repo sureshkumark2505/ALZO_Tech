@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Resend } from 'resend';
+import process from 'node:process';
 
 /**
  * Escapes untrusted user input before injecting into HTML email templates.
