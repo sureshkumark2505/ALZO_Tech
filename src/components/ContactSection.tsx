@@ -169,15 +169,29 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
                 <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
                   Thank you, <span className="text-slate-900 font-semibold">{formData.name}</span>. Our engineering team has received your brief for <span className="text-blue-600 font-medium">{formData.service}</span> and will respond within 24 business hours.
                 </p>
-                <button
-                  onClick={() => {
-                    setSubmitted(false);
-                    setErrorMessage(null);
-                  }}
-                  className="mt-4 px-6 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
-                >
-                  Submit Another Inquiry
-                </button>
+                <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <a
+                    href={`https://wa.me/919342836527?text=${encodeURIComponent(`Hi ALZO Tech, I just submitted an enquiry for "${formData.service}" on your website.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick('success_screen')}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-colors"
+                    aria-label="Connect on WhatsApp"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Chat with Engineer on WhatsApp</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                  <button
+                    onClick={() => {
+                      setSubmitted(false);
+                      setErrorMessage(null);
+                    }}
+                    className="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
+                  >
+                    Submit Another Inquiry
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">

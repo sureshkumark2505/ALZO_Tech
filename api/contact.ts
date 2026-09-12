@@ -303,6 +303,94 @@ Submitted: ${timestampFormatted} (IST)
 </html>
 `.trim();
 
+/**
+ * Sends automated WhatsApp notification to admin phones via CallMeBot API.
+ * Supports dual notifications to both numbers (Primary: 919342836527 & Secondary: 918637455316).
+ * Uses CALLMEBOT_PHONE_1 / CALLMEBOT_API_KEY_1 and CALLMEBOT_PHONE_2 / CALLMEBOT_API_KEY_2.
+ * Gracefully catches and logs errors so email delivery is never affected.
+ */
+async function sendWhatsAppAlert({
+  name,
+  businessName,
+  email,
+  phone,
+  service,
+  budget,
+  message,
+  timestamp,
+}: {
+  name: string;
+  businessName: string;
+  email: string;
+  phone?: string;
+  service: string;
+  budget: string;
+  message: string;
+  timestamp: string;
+}): Promise<boolean> {
+  const recipients: { phone: string; apiKey?: string }[] = [];
+
+  // Number 1 (Primary: 919342836527)
+  const phone1 = process.env.CALLMEBOT_PHONE_1 || process.env.CALLMEBOT_PHONE || '919342836527';
+  const apiKey1 = process.env.CALLMEBOT_API_KEY_1 || process.env.CALLMEBOT_API_KEY;
+  if (apiKey1) {
+    recipients.push({ phone: phone1, apiKey: apiKey1 });
+  }
+
+  // Number 2 (Secondary: 918637455316)
+  const phone2 = process.env.CALLMEBOT_PHONE_2 || '918637455316';
+  const apiKey2 = process.env.CALLMEBOT_API_KEY_2;
+  if (apiKey2) {
+    recipients.push({ phone: phone2, apiKey: apiKey2 });
+  }
+
+  if (recipients.length === 0) {
+    console.log('CallMeBot WhatsApp alert skipped: No CALLMEBOT_API_KEY configured.');
+    return false;
+  }
+
+  const formattedText = 
+`🚀 *NEW ALZO TECH WEBSITE ENQUIRY*
+
+👤 *Name:* ${name}
+🏢 *Business:* ${businessName}
+📧 *Email:* ${email}
+📱 *Phone:* ${phone || 'Not provided'}
+💼 *Service:* ${service}
+💰 *Budget:* ${budget}
+
+📝 *Requirements:*
+${message}
+
+⏰ *Time:* ${timestamp} (IST)
+🌐 *Source:* ALZO Tech Website`;
+
+  const encodedText = encodeURIComponent(formattedText);
+
+  const dispatchPromises = recipients.map(async (recipient) => {
+    try {
+      const cleanPhone = recipient.phone.replace(/[^0-9]/g, '');
+      const url = `https://api.callmebot.com/whatsapp.php?phone=${cleanPhone}&text=${encodedText}&apikey=${encodeURIComponent(recipient.apiKey!.trim())}`;
+
+      const res = await fetch(url, { method: 'GET' });
+      if (res.ok) {
+        console.log(`WhatsApp alert sent successfully to +${cleanPhone} via CallMeBot.`);
+        return true;
+      } else {
+        const errText = await res.text().catch(() => '');
+        console.warn(`CallMeBot WhatsApp alert response error for +${cleanPhone}:`, res.status, errText);
+        return false;
+      }
+    } catch (err: any) {
+      console.warn(`CallMeBot WhatsApp alert network error for +${recipient.phone}:`, err?.message || err);
+      return false;
+    }
+  });
+
+  await Promise.allSettled(dispatchPromises);
+  return true;
+}
+
     // 6. Send Email via Resend
     const resend = new Resend(apiKey);
     const { data, error } = await resend.emails.send({
@@ -321,6 +409,18 @@ Submitted: ${timestampFormatted} (IST)
         message: 'Unable to deliver inquiry email at this time. Please try again or reach out directly on WhatsApp.',
       });
     }
+
+    // 7. Send automated WhatsApp alert to ALZO admin (+91 9342836527) via CallMeBot
+    await sendWhatsAppAlert({
+      name: cleanName,
+      businessName: cleanBusiness,
+      email: cleanEmail,
+      phone: cleanPhone,
+      service: cleanService,
+      budget: cleanBudget,
+      message: cleanMessage,
+      timestamp: timestampFormatted,
+    }).catch((err) => console.warn('WhatsApp alert error:', err));
 
     return res.status(200).json({
       success: true,
