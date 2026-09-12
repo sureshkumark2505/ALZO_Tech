@@ -1,6 +1,7 @@
 import React from 'react';
 import { Logo } from './Logo';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, MessageSquare } from 'lucide-react';
+import { trackWhatsAppClick } from '../lib/analytics';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -26,6 +27,19 @@ export const Footer: React.FC = () => {
             </p>
             <div className="pt-2 text-xs font-mono text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-600 font-bold uppercase tracking-wider">
               “We Innovate, You Elevate”
+            </div>
+            <div className="pt-2 flex flex-col gap-2 text-xs">
+              <a
+                href="https://wa.me/919342836527"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackWhatsAppClick('footer_primary')}
+                className="inline-flex items-center gap-2 text-slate-700 hover:text-emerald-700 font-medium transition-colors"
+                aria-label="Direct WhatsApp Contact +91 9342836527"
+              >
+                <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                <span>WhatsApp: +91 9342836527</span>
+              </a>
             </div>
           </div>
 

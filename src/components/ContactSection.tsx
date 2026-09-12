@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle2, Sparkles } from 'lucide-react';
-import { trackLead } from '../lib/analytics';
+import { Send, CheckCircle2, Sparkles, MessageSquare, ArrowUpRight, AlertCircle } from 'lucide-react';
+import { trackLead, trackWhatsAppClick } from '../lib/analytics';
 
 interface ContactSectionProps {
   initialService?: string;
@@ -19,6 +19,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const budgetTiers = [
     '$1.5k - $3k',
@@ -36,16 +37,42 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
     'Other Bespoke Solution',
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    if (loading) return;
 
-    // Simulate submission delay
-    setTimeout(() => {
+    setLoading(true);
+    setErrorMessage(null);
+
+    const formEl = e.currentTarget;
+    const hpField = formEl.elements.namedItem('_hp') as HTMLInputElement | null;
+    const hpValue = hpField ? hpField.value : '';
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          _hp: hpValue,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitted(true);
+        trackLead({ lead_source: 'website' });
+      } else {
+        setErrorMessage(data.message || 'Unable to deliver your enquiry. Please try again or message us on WhatsApp.');
+      }
+    } catch (err: any) {
+      setErrorMessage('Network connection error. Please try again or reach out directly on WhatsApp.');
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-      trackLead({ lead_source: 'website' });
-    }, 900);
+    }
   };
 
   return (
@@ -96,6 +123,36 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
                 </li>
               </ul>
             </div>
+
+            {/* Direct WhatsApp Quick Contact */}
+            <div className="mt-6 p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-emerald-600 text-white shadow-sm flex items-center justify-center">
+                  <MessageSquare className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-mono uppercase tracking-wider text-emerald-950 font-bold">
+                    Need Instant Consultation?
+                  </div>
+                  <div className="text-xs text-slate-600">
+                    Connect directly with ALZO Tech on WhatsApp
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="https://wa.me/919342836527"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackWhatsAppClick('contact_section_primary')}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-emerald-900 bg-white hover:bg-emerald-100 border border-emerald-300 shadow-sm transition-colors"
+                  aria-label="Chat on WhatsApp +91 9342836527"
+                >
+                  <span>+91 9342836527</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600" />
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Right Column: Interactive Enquiry Form (7 cols) */}
@@ -113,7 +170,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
                   Thank you, <span className="text-slate-900 font-semibold">{formData.name}</span>. Our engineering team has received your brief for <span className="text-blue-600 font-medium">{formData.service}</span> and will respond within 24 business hours.
                 </p>
                 <button
-                  onClick={() => setSubmitted(false)}
+                  onClick={() => {
+                    setSubmitted(false);
+                    setErrorMessage(null);
+                  }}
                   className="mt-4 px-6 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
                 >
                   Submit Another Inquiry
@@ -121,6 +181,38 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                
+                {/* Honeypot anti-spam field (hidden from human visitors) */}
+                <div className="hidden" aria-hidden="true">
+                  <input
+                    type="text"
+                    name="_hp"
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
+
+                {/* Error Banner */}
+                {errorMessage && (
+                  <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm font-medium flex items-start gap-3 animate-in fade-in duration-200">
+                    <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span>{errorMessage}</span>
+                      <div className="mt-1 text-slate-600 font-normal">
+                        You can also contact us directly on WhatsApp:{' '}
+                        <a 
+                          href="https://wa.me/919342836527" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          onClick={() => trackWhatsAppClick('error_banner')}
+                          className="text-emerald-700 font-bold underline"
+                        >
+                          +91 9342836527
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {/* Row 1: Name & Business Name */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -242,7 +334,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
                   type="submit"
                   disabled={loading}
                   data-cursor="cta"
-                  className="w-full py-4 rounded-xl text-sm font-semibold tracking-wide text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 shadow-[0_10px_25px_-5px_rgba(59,130,246,0.4)] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98]"
+                  className="w-full py-4 rounded-xl text-sm font-semibold tracking-wide text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 shadow-[0_10px_25px_-5px_rgba(59,130,246,0.4)] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98] cursor-pointer disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
                   <span>{loading ? 'Transmitting Brief...' : 'Send Project Enquiry →'}</span>
@@ -259,3 +351,4 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
     </section>
   );
 };
+
