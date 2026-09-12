@@ -11,6 +11,7 @@ import {
   Terminal, 
   Eye 
 } from 'lucide-react';
+import { trackPortfolioClick } from '../lib/analytics';
 
 interface PortfolioProps {
   onOpenCaseStudy: (cs: CaseStudy) => void;
@@ -83,7 +84,10 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onOpenCaseStudy, onInquire
               <div
                 key={project.id}
                 data-cursor="view"
-                onClick={() => onOpenCaseStudy(project)}
+                onClick={() => {
+                  trackPortfolioClick(project.title);
+                  onOpenCaseStudy(project);
+                }}
                 className={`group cursor-pointer rounded-3xl bg-white border border-slate-200/90 hover:border-blue-400 shadow-[0_10px_30px_-10px_rgba(15,23,42,0.06)] hover:shadow-[0_20px_40px_-15px_rgba(37,99,235,0.15)] transition-all duration-500 overflow-hidden flex flex-col justify-between p-6 sm:p-8 relative ${
                   isLarge ? 'lg:col-span-12' : 'lg:col-span-6'
                 }`}
@@ -191,6 +195,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onOpenCaseStudy, onInquire
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      trackPortfolioClick(project.title);
                       onOpenCaseStudy(project);
                     }}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors"

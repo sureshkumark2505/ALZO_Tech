@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Logo } from './Logo';
 import { ArrowUpRight, Menu, X, Sparkles } from 'lucide-react';
+import { trackCTAClick } from '../lib/analytics';
 
 interface NavbarProps {
   onStartProject: () => void;
@@ -83,7 +84,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
         {/* Right CTA Button */}
         <div className="hidden sm:flex items-center gap-3">
           <button
-            onClick={onStartProject}
+            onClick={() => {
+              trackCTAClick('Start a Project', 'navbar_desktop');
+              onStartProject();
+            }}
             data-cursor="cta"
             className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold tracking-wide text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 transition-all duration-300 shadow-[0_4px_20px_rgba(37,99,235,0.3)] hover:shadow-[0_6px_25px_rgba(124,58,237,0.4)] active:scale-[0.98]"
           >
@@ -95,7 +99,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
         {/* Mobile Hamburger Button */}
         <div className="flex lg:hidden items-center gap-2">
           <button
-            onClick={onStartProject}
+            onClick={() => {
+              trackCTAClick('Start a Project', 'navbar_mobile_header');
+              onStartProject();
+            }}
             className="sm:hidden px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-blue-600 shadow-sm"
           >
             Start
@@ -129,6 +136,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onStartProject }) => {
           <div className="pt-2 border-t border-slate-100">
             <button
               onClick={() => {
+                trackCTAClick('Start a Project', 'navbar_mobile_drawer');
                 setMobileMenuOpen(false);
                 onStartProject();
               }}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, MessageSquare, Sparkles } from 'lucide-react';
+import { trackCTAClick } from '../lib/analytics';
 
 interface CTASectionProps {
   onStartProject: () => void;
@@ -41,7 +42,10 @@ export const CTASection: React.FC<CTASectionProps> = ({
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
-              onClick={onStartProject}
+              onClick={() => {
+                trackCTAClick('Start a Project', 'cta_section_primary');
+                onStartProject();
+              }}
               data-cursor="cta"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-sm font-semibold tracking-wide text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 shadow-[0_10px_25px_-5px_rgba(59,130,246,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(124,58,237,0.5)] transition-all duration-300 active:scale-[0.98]"
             >
@@ -50,7 +54,10 @@ export const CTASection: React.FC<CTASectionProps> = ({
             </button>
 
             <button
-              onClick={onTalkToUs}
+              onClick={() => {
+                trackCTAClick('Talk to ALZO Tech', 'cta_section_secondary');
+                onTalkToUs();
+              }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold tracking-wide text-slate-800 bg-white hover:bg-slate-50 border border-slate-200/90 hover:border-slate-300 shadow-sm transition-all duration-300"
             >
               <MessageSquare className="w-4 h-4 text-blue-600" />

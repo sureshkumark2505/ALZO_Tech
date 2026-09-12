@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import logoImg from '../assets/logo.png';
 import { Layers, Bot, Search, ShieldCheck, ArrowRight } from 'lucide-react';
+import { trackCTAClick } from '../lib/analytics';
 
 interface AboutProps {
   onExploreServices: () => void;
@@ -83,7 +84,10 @@ export const About: React.FC<AboutProps> = ({ onExploreServices }) => {
 
             <div className="mt-10 pt-8 border-t border-slate-200/80">
               <button
-                onClick={onExploreServices}
+                onClick={() => {
+                  trackCTAClick('Discover our Four Growth Systems', 'about_section');
+                  onExploreServices();
+                }}
                 className="group inline-flex items-center gap-3 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors"
               >
                 <span>Discover our Four Growth Systems</span>

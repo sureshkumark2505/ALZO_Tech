@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle2, Sparkles } from 'lucide-react';
+import { trackLead } from '../lib/analytics';
 
 interface ContactSectionProps {
   initialService?: string;
@@ -43,6 +44,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ initialService =
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);
+      trackLead({ lead_source: 'website' });
     }, 900);
   };
 

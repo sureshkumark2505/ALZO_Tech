@@ -1,6 +1,7 @@
 import React from 'react';
 import { CaseStudy } from '../types';
 import { X, CheckCircle2, ArrowUpRight, Cpu, Layers, Sparkles } from 'lucide-react';
+import { trackCTAClick, trackPortfolioClick } from '../lib/analytics';
 
 interface CaseStudyModalProps {
   caseStudy: CaseStudy | null;
@@ -121,6 +122,8 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={() => {
+                trackCTAClick('Build A Similar Solution', 'case_study_modal');
+                trackPortfolioClick(caseStudy.title);
                 onInquire(caseStudy.title);
                 onClose();
               }}

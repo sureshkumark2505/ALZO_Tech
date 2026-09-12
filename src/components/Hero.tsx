@@ -10,6 +10,7 @@ import {
   Zap, 
   Layers 
 } from 'lucide-react';
+import { trackCTAClick } from '../lib/analytics';
 
 interface HeroProps {
   onStartProject: () => void;
@@ -108,7 +109,10 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
               <button
-                onClick={onStartProject}
+                onClick={() => {
+                  trackCTAClick('Start Your Growth Journey', 'hero_primary');
+                  onStartProject();
+                }}
                 data-cursor="cta"
                 className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-sm font-bold tracking-wide text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 shadow-[0_4px_25px_rgba(37,99,235,0.35)] hover:shadow-[0_8px_30px_rgba(124,58,237,0.45)] transition-all duration-300 active:scale-[0.98]"
               >
@@ -117,7 +121,10 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onExploreSolutions }
               </button>
 
               <button
-                onClick={onExploreSolutions}
+                onClick={() => {
+                  trackCTAClick('Explore Our Solutions', 'hero_secondary');
+                  onExploreSolutions();
+                }}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold tracking-wide text-slate-700 bg-white hover:bg-slate-50 border border-slate-200/90 hover:border-slate-300 shadow-sm transition-all duration-300"
               >
                 <span>Explore Our Solutions</span>
