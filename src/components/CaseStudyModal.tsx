@@ -119,7 +119,18 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
           <div className="text-xs text-slate-500 font-mono font-medium">
             Want a system like {caseStudy.title}?
           </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            {caseStudy.link && (
+              <a
+                href={caseStudy.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
+              >
+                <span>Visit Live Site</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </a>
+            )}
             <button
               onClick={() => {
                 trackCTAClick('Build A Similar Solution', 'case_study_modal');

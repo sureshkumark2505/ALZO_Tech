@@ -2,6 +2,30 @@ import { CaseStudy } from '../types';
 
 export const portfolioData: CaseStudy[] = [
   {
+    id: 'indhu-bridal-studio',
+    title: 'Indhu Bridal Studio',
+    client: 'Indhu Bridal Studio',
+    category: 'Client Project',
+    badge: 'CLIENT PROJECT',
+    year: '2026',
+    description: 'Digital web presence developed for Indhu Bridal Studio.',
+    challenge: 'Project challenge and requirements details to be documented.',
+    solution: 'Technical implementation and platform details to be documented.',
+    results: [
+      'Digital presence and web platform implementation',
+      'Case study documentation in progress'
+    ],
+    technologies: ['Web Platform'],
+    metrics: [
+      { label: 'Status', value: 'Completed' },
+      { label: 'Type', value: 'Client Work' },
+      { label: 'Year', value: '2026' }
+    ],
+    featured: true,
+    link: 'https://indhubridalstudio.vercel.app/',
+    accentGradient: 'from-pink-500 via-rose-500 to-violet-600'
+  },
+  {
     id: 'formmind-ai',
     title: 'FormMind AI',
     client: 'Proprietary Intelligence Platform',

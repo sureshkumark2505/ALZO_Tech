@@ -49,10 +49,10 @@ export const Footer: React.FC = () => {
               Navigation
             </div>
             <ul className="space-y-2.5 text-xs text-slate-600">
-              {['Home', 'About', 'Services', 'Work', 'Process', 'Insights', 'Contact'].map((item) => (
+              {['Home', 'About', 'Services', 'Work', 'Why', 'Contact'].map((item) => (
                 <li key={item}>
                   <a href={`#${item.toLowerCase()}`} className="hover:text-blue-600 transition-colors">
-                    {item}
+                    {item === 'Why' ? 'Why ALZO' : item}
                   </a>
                 </li>
               ))}

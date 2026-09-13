@@ -5,15 +5,9 @@ import { Hero } from './components/Hero';
 import { TrustStrip } from './components/TrustStrip';
 import { About } from './components/About';
 import { Services } from './components/Services';
-import { InteractiveJourney } from './components/InteractiveJourney';
-import { WorkflowShowcase } from './components/WorkflowShowcase';
-import { VisibilitySection } from './components/VisibilitySection';
-import { GrowthSection } from './components/GrowthSection';
 import { Portfolio } from './components/Portfolio';
 import { CaseStudyModal } from './components/CaseStudyModal';
-import { Process } from './components/Process';
 import { WhyAlzo } from './components/WhyAlzo';
-import { Insights } from './components/Insights';
 import { CTASection } from './components/CTASection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
@@ -72,34 +66,16 @@ export function App() {
         {/* 04. Four Growth Systems (Services) */}
         <Services onSelectService={handleSelectService} />
 
-        {/* 05. Signature 4-Stage Interactive Journey: Build -> Automate -> Get Found -> Grow */}
-        <InteractiveJourney />
-
-        {/* 06. AI & Automation Autonomous Pipeline Simulation */}
-        <WorkflowShowcase />
-
-        {/* 07. Organic Search & Google Maps Visibility */}
-        <VisibilitySection />
-
-        {/* 08. Analytics & Compounding Growth Engine */}
-        <GrowthSection />
-
-        {/* 09. Work & Case Studies (FormMind AI, MSME Platform, Nexus Commerce) */}
+        {/* 05. Work & Case Studies (FormMind AI, MSME Platform, Nexus Commerce, Indhu Bridal Studio) */}
         <Portfolio 
           onOpenCaseStudy={(cs) => setSelectedCaseStudy(cs)} 
           onInquire={handleCaseStudyInquiry}
         />
 
-        {/* 10. From Idea to Impact (4-Step Timeline Process) */}
-        <Process />
-
-        {/* 11. Why ALZO Tech (4 Core Principles) */}
+        {/* 06. Why ALZO Tech (4 Core Principles) */}
         <WhyAlzo />
 
-        {/* 12. Strategic Insights & Transparent Client Stories */}
-        <Insights />
-
-        {/* 13. Dramatic Closing Call-to-Action */}
+        {/* 07. Dramatic Closing Call-to-Action */}
         <CTASection 
           onStartProject={scrollToContact} 
           onTalkToUs={scrollToContact} 
